@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>时薪计算</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body{
+            background: #310f1b;
+            color:#f7f4ed;
+        }
+
+        .d-block{
+            display: block;
+        }
+
+        .tab-style{
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+            cursor: pointer;
+        }
+        .div-list{
+            display: none;
+        }
+        .tab-active{
+            border-bottom:1px solid #FFF;
+        }
+
+        .active{
+            display: block;
+        }
+
+        .p-20{
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="tab">
+        <ul class="tab-style">
+            <li class="tab-active">时薪计算</li>
+            <li>工资预计</li>
+        </ul>
+
+        <div class="div-list active">
+            <div class="p-20">
+                <span>每月薪水</span>
+                <div>
+                    <input id="salary" value="5000" type="number" placeholder="请输入你的薪水">
+                </div>
+            </div>
+            <div class="p-20">
+                <span>平均上班时间</span>
+                <div>
+                    <input id="ave_time" type="range" min="5" max="12" value="8"
+                           onchange="document.getElementById('show').innerHTML=value">
+                    <span id="show">8</span>
+                    <span>小时</span>
+                </div>
+            </div>
+            <div class="p-20">
+                <span>额外上班</span>
+                <label class="d-block">
+                    <input type="radio" name="week" value="0" checked="true">
+                    正常双休
+                </label>
+                <label class="d-block">
+                    <input type="radio" name="week" value="12">
+                    每月有一星期周6上班
+                </label>
+                <label class="d-block">
+                    <input type="radio" name="week" value="26">
+                    大小周
+                </label>
+                <label class="d-block">
+                    <input type="radio" name="week" value="52">
+                    周6上班
+                </label>
+                <label class="d-block">
+                    <input type="radio" name="week" value="104">
+                    没有双休
+                </label>
+            </div>
+
+            <div class="p-20">
+                默认11天法定节假日全部放假
+            </div>
+
+            <div class="p-20">
+                <button style="width: 100%" onclick="calcResult()">计算</button>
+            </div>
+
+            <div id="result" class="p-20">
+
+            </div>
+
+        </div>
+
+        <div class="div-list">
+            <div class="p-20">
+                <span>期望时薪</span>
+                <div>
+                    <input id="every_salary2" value="30" type="number" placeholder="请输入你期望的时薪">
+                </div>
+            </div>
+            <div class="p-20">
+                <span>预计上班时间</span>
+                <div>
+                    <input id="ave_time2" type="range" min="5" max="12" value="8"
+                           onchange="document.getElementById('show2').innerHTML=value">
+                    <span id="show2">8</span>
+                    <span>小时</span>
+                </div>
+            </div>
+            <div class="p-20">
+                <span>额外上班</span>
+                <label class="d-block">
+                    <input type="radio" name="week2" value="0" checked="true">
+                    正常双休
+                </label>
+                <label class="d-block">
+                    <input type="radio" name="week2" value="12">
+                    每月有一星期周6上班
+                </label>
+                <label class="d-block">
+                    <input type="radio" name="week2" value="26">
+                    大小周
+                </label>
+                <label class="d-block">
+                    <input type="radio" name="week2" value="52">
+                    周6上班
+                </label>
+                <label class="d-block">
+                    <input type="radio" name="week2" value="104">
+                    没有双休
+                </label>
+            </div>
+
+            <div class="p-20">
+                默认11天法定节假日全部放假
+            </div>
+
+            <div class="p-20">
+                <button style="width: 100%" onclick="calcResult2()">计算</button>
+            </div>
+
+            <div id="result2" class="p-20">
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+    <script>
+
+        function calcResult() {
+            var result = document.getElementById('result');
+            var salary = document.getElementById('salary');
+            var ave_time= document.getElementById('ave_time');
+            var week = document.getElementsByName('week');
+            var ave_day;
+            for (var i = 0; i <week.length ; i++) {
+                if (week[i].checked && week[i].type === 'radio') {
+                    ave_day=week[i]
+                }
+            }
+            var work_salary=salary.value*12;
+            var many_week=52;
+            var work_day=many_week*5+parseInt(ave_day.value)-11;
+            var work_time=ave_time.value;
+            // console.log(work_salary,work_day,work_time);
+            var every_salary=work_salary/(work_day*work_time);
+            result.innerText='你的时薪为:'+every_salary.toFixed(2)+'元/小时';
+        }
+
+
+
+        function calcResult2() {
+            var result2 = document.getElementById('result2');
+            var every_salary2 = document.getElementById('every_salary2');
+            var ave_time2= document.getElementById('ave_time2');
+            var week2 = document.getElementsByName('week2');
+            var ave_day2;
+
+            for (var i = 0; i <week2.length ; i++) {
+                if (week2[i].checked && week2[i].type === 'radio') {
+                    ave_day2=week2[i]
+                }
+            }
+            var work_wage2=every_salary2.value;
+            var many_week2=52;
+            var work_day2=many_week2*5+parseInt(ave_day2.value)-11;
+            var work_time2=ave_time2.value;
+            // console.log(work_wage2,work_day2,work_time2);
+            var salary2=(work_day2*work_time2)*work_wage2/12;
+
+            result2.innerText='你的预期工资为:'+salary2.toFixed(2)+'元/月';
+        }
+
+
+        var oTab = document.getElementById('tab'),
+            tabList = oTab.getElementsByTagName('li'),
+            divList = document.getElementsByClassName('div-list');
+        //=>封装页卡切换的方法
+        function changeTab(curIndex) {
+            //1.清空所有LI和DIV的选中样式
+            for (var i = 0; i < tabList.length; i++) {
+                tabList[i].className = '';
+                divList[i].className = 'div-list';
+            }
+            //2.点击的是谁,就让谁有选中的样式
+            //需求：封装方法的时候，我们还不知道用户点击的是谁呢，只有用户点击执行这个方法才会知道，此时我们应该给函数设置一个形参变量：当执行这个方法的时候，让用户告诉我点击的是谁即可
+            //curIndex:提供的形参入口,传递给我们的是当前点击的这个LI的索引
+            //tabList[curIndex]:当前点击的LI
+            tabList[curIndex].className = 'tab-active';
+            divList[curIndex].className = 'div-list active';
+        }
+
+        for (var i = 0; i < tabList.length; i++) {
+            //tabList[i]:元数集合中的某一项(元素对象)
+            tabList[i].myIndex = i;
+            tabList[i].onclick = function () {
+                changeTab(this.myIndex);//=>需要传递当前点击LI的索引,但是还不能使用I了 (this:当前点击的LI  this.myIndex： 从当前点击LI的自定义属性上获取到事先存储的索引)
+            }
+        }
+
+    </script>
+</body>
+</html>

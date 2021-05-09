@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body{
+            height: 300vh;
+        }
+        input{
+            width: 400px;
+            height:40px;
+            margin: 0 auto;
+            display: block;
+        }
+        .throttle{
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            font-size: 20px;
+            padding: 4px;
+        }
+
+        .debounce{
+            display: block;
+            position: fixed;
+            top: 0;
+            right: 0;
+            font-size: 20px;
+            padding: 4px;
+        }
+    </style>
+</head>
+<body>
+    <input type="text" id="input" placeholder="输入">
+    <div class="throttle">
+        <div>
+            <span>无节流测试：</span>
+            <span id="result1-1">0</span>
+        </div>
+        <div>
+            <span>节流测试：</span>
+            <span id="result1-2">0</span>
+        </div>
+    </div>
+    <div class="debounce">
+        <div>
+            <span>无防抖测试：</span>
+            <span id="result2-1">0</span>
+        </div>
+        <div>
+            <span>防抖测试：</span>
+            <span id="result2-2">0</span>
+        </div>
+    </div>
+    <script>
+        function throttle(func, wait) {
+            let timeout,self,args;
+            let previous = 0;
+
+            let later = function(){
+                previous = +new Date();
+                timeout = null;
+                func.apply(self,args);
+            }
+
+            let throttled = function(...param) {
+                self = this;
+                args = param;
+                let now = +new Date();
+                let remaining = wait-(now-previous);
+                // 如果没有剩余的时间了或者你改了系统时间
+                if (remaining<=0 || remaining>wait) {
+                    if(timeout){
+                        clearTimeout(timeout)
+                        timeout=null;
+                    }
+                    previous = now;
+                    func.apply(self, args);
+                }else if(!timeout){
+                    timeout=setTimeout(later,remaining);
+                }
+            };
+            return throttled;
+        }
+
+        function debounce(func, wait, immediate) {
+            let timeout,self,args,result;
+
+            return function (...param) {
+                self = this;
+                args = param;
+                if (timeout) clearTimeout(timeout);
+                if (immediate) {
+                    // 如果已经执行过，不再执行
+                    let callNow = !timeout;
+                    timeout = setTimeout(function(){
+                        timeout = null;
+                    }, wait)
+                    if (callNow) result = func.apply(self, args)
+                }
+                else {
+                    timeout = setTimeout(function(){
+                        func.apply(self, args)
+                    }, wait);
+                }
+                return result;
+            }
+        }
+
+        function throttle1(func,wait){
+            let timeout,self,args;
+            let previous=0;
+
+            let later=function(){
+                previous=+new Date();
+                timeout=null;
+                func.apply(self,args);
+            }
+
+            let throttle=function(...param){
+                self=this;
+                args=param;
+                let now=+new Date();
+                let remain=wait-(now-previous);
+                if(remain<=0 || remain>wait){
+                    if(timeout){
+                        clearTimeout(timeout);
+                        timeout=null;
+                    }
+                    previous=now;
+                    func.apply(self,args);
+                }
+                else if(!timeout){
+                    timeout=setTimeout(later,remain);
+                }
+            }
+            return throttle
+        }
+
+        function debounce1(func,wait,immediate){
+            let timeout,self,args,result;
+
+            return function (...param) {
+                self=this;
+                args=param;
+                if(timeout) clearTimeout(timeout)
+                if(immediate){
+                    let callNow = !timeout;
+                    timeout = setTimeout(function(){
+                        timeout = null;
+                    }, wait)
+                    if (callNow) result = func.apply(self, args)
+                }else{
+                    timeout=setTimeout(function () {
+                        func.apply(self,args)
+                    },wait);
+                }
+
+            }
+        }
+
+        let result11=document.getElementById('result1-1');
+        let result12=document.getElementById('result1-2');
+        let result21=document.getElementById('result2-1');
+        let result22=document.getElementById('result2-2');
+        let input=document.getElementById('input');
+
+
+
+        function log11(){
+            result11.textContent++;
+        }
+        function log12(){
+            result12.textContent++;
+        }
+        function log21(){
+            result21.textContent++;
+        }
+        function log22(){
+            result22.textContent++;
+        }
+
+        window.addEventListener('scroll',log11);
+        window.addEventListener('scroll',throttle(log12,500));
+        input.addEventListener('input',log21);
+        input.addEventListener('input',debounce(log22,500,false));
+    </script>
+</body>
+</html>

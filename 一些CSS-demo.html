@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="UTF-8">
+        <title>Document</title>
+        <style>
+             html{
+              font-size: 100px;
+             }
+
+            body.on .filter-blur {
+                filter: blur(.02rem);
+                -moz-filter: blur(.02rem);
+                -webkit-filter: blur(.02rem);
+            }
+            body.on .mask {
+                display: block;
+            }
+
+            .mask {
+                /*全屏遮罩*/
+                position: fixed;
+                top: 0;
+                left: 0;
+                bottom: 0;
+                right: 0;
+                background: rgba(192,192,192,0.2);
+                display: none;
+            }
+            .mask .pop {
+                font-size: .2rem;
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                /*css3水平垂直居中*/
+                transform: translate(-50%, -50%);
+                width: 2rem;
+                height: 1.2rem;
+                background: #6A6A6A;
+                border: .01rem solid #464646;
+                border-radius: .05rem;
+                box-shadow: 0 0 .15rem #464646;
+            }
+
+            /*------------------------------------*/
+            .switch-btn {
+              cursor: pointer;
+              width: .45rem;
+              height: .28rem;
+              position: relative;
+              border: .01rem solid #dfdfdf;
+              background-color: #fdfdfd;
+              box-shadow: #dfdfdf 0 0 0 0 inset;
+              border-radius: .15rem;
+              background-clip: content-box;
+              display: inline-block;
+              -webkit-appearance: none;
+              user-select: none;
+              outline: none;
+            }
+            .switch-btn:before {
+              content: '';
+              width: .25rem;
+              height: .25rem;
+              position: absolute;
+              top: 0;
+              left: 0;
+              border-radius: .2rem;
+              background-color: #fff;
+              box-shadow: 0 .01rem .03rem rgba(0, 0, 0, .4);
+            }
+            .switch-btn:checked {
+              border-color: #56b0d4;
+              box-shadow: #56b0d4 0 0 0 16rem inset;
+              background-color: #56b0d4;
+            }
+            .switch-btn:checked:before {
+              left: .18rem;
+            }
+            .switch-btn.switch-btn-animbg {
+              transition: background-color ease .4s;
+            }
+            .switch-btn.switch-btn-animbg:before {
+              transition: left .3s;
+            }
+            .switch-btn.switch-btn-animbg:checked {
+              box-shadow: #dfdfdf 0 0 0 0 inset;
+              background-color: #55d843;
+              transition: border-color .4s, background-color ease .4s;
+            }
+            .switch-btn.switch-btn-animbg:checked:before {
+              transition: left .3s;
+            }
+
+
+
+            /*美观的radio*/
+
+
+            .rd {
+              display: none;  /* 将原生的radio隐藏 */
+            }
+
+            .radio-span{
+              font-size: .2rem;
+
+            }
+             
+            /* label 模拟 “底部框” */
+            .rd + label {
+              vertical-align:middle;
+
+              margin-bottom:-.4rem;
+              display: inline-block;
+              position: relative;
+              cursor: pointer;
+              width: .24rem;
+              height: .24rem;
+              border-radius: 50%;
+              background-color: #cecece;
+              box-shadow: 0 1px 15px rgba(0, 0, 0, 0.1) inset, 0 1px 4px rgba(0, 0, 0, 0.1) inset, 1px -1px 2px rgba(0, 0, 0, 0.1); 
+            }
+             
+            /* “label::before伪元素 模拟 “选择小圆块” */
+            .rd + label:before {
+
+              content: '';
+              position: absolute;
+              top: .12rem;
+              left: .12rem;   
+              z-index: 500;
+              width: 0;
+              height: 0;
+              border-radius: 50%;
+              background: #f1f1f1;
+              -webkit-transition: all 0.15s ease-in;
+              transition: all 0.15s ease-in;
+            }
+             
+            /* radio选中状态时，“底部框”的样式 */
+            .rd:checked + label {
+              background: #059acb;  
+            }
+             
+            /* radio选中状态时，“选择小圆块”的样式 */
+            .rd:checked + label:before {
+              content: '';
+              position: absolute;
+              top: 4px;
+              left: 4px;
+              width: 16px;
+              height: 16px;     
+            }
+        </style>
+</head>
+<body>
+		
+       <input class="switch-btn switch-btn-animbg" type="checkbox" checked>
+
+
+
+	   <div class="filter-blur">
+	        <input type="button" value="显示遮罩" id="js_btn">
+	        <input type="button" value="自定义弹窗" id="js_btn_1">
+	    </div>
+	    
+	    <div class="mask" id="js_mask">
+	        <div class="pop" id="js_pop">弹出框内容</div>
+	    </div>
+
+
+
+
+    <input type="radio" name="sex" class="rd" id="rd1" checked>
+    <label for="rd1"></label>
+    <span class="radio-span">男</span>
+    <input type="radio" name="sex" class="rd" id="rd2">
+    <label for="rd2"></label>
+    <span class="radio-span">女</span>
+
+
+
+
+
+
+	    
+
+
+
+	<script>
+        // 绑定弹窗事件
+	    document.getElementById("js_btn").addEventListener('click', function(){
+	        document.body.className="on";
+	    }, false);
+	    // 点击遮罩隐藏弹窗
+	    document.getElementById("js_mask").addEventListener('click', function(){
+	        document.body.className="";
+	    }, false);
+	    // 点击弹窗阻止事件冒泡
+	    document.getElementById("js_pop").addEventListener('click', function(e){
+	        e.stopPropagation();
+	    }, false);
+	</script>
+
+
+
+	<script>
+    window.alert = alert;
+    function alert(data, callback) { //回调函数
+        var alert_bg = document.createElement('div');
+        alert_box = document.createElement('div'),
+            alert_text = document.createElement('div'),
+            alert_btn = document.createElement('div'),
+            textNode = document.createTextNode(data ? data : ''),
+            btnText = document.createTextNode('确定');
+
+        // 控制样式
+        css(alert_bg, {
+            'position': 'fixed',
+            'top': '0',
+            'left': '0',
+            'right': '0',
+            'bottom': '0',
+            'background-color': 'rgba(0, 0, 0, 0.1)',
+            'z-index': '9999'
+        });
+
+        css(alert_box, {
+            'width': '2.7rem',
+            'max-width': '90%',
+            'font-size': '.16rem',
+            'text-align': 'center',
+            'background-color': '#fff',
+            'border-radius': '.15rem',
+            'position': 'absolute',
+            'top': '50%',
+            'left': '50%',
+            'transform': 'translate(-50%, -50%)'
+        });
+
+        css(alert_text, {
+            'padding': '.1rem .15rem',
+            'border-bottom': '.01rem solid #ddd'
+        });
+
+        css(alert_btn, {
+            'padding': '.1rem 0',
+            'color': '#007aff',
+            'font-weight': '600',
+            'cursor': 'pointer'
+        });
+
+        // 内部结构套入
+        alert_text.appendChild(textNode);
+        alert_btn.appendChild(btnText);
+        alert_box.appendChild(alert_text);
+        alert_box.appendChild(alert_btn);
+        alert_bg.appendChild(alert_box);
+
+        // 整体显示到页面内
+        document.getElementsByTagName('body')[0].appendChild(alert_bg);
+
+        // 确定绑定点击事件删除标签
+        alert_btn.onclick = function() {
+            alert_bg.parentNode.removeChild(alert_bg);
+            if (typeof callback === 'function') {
+                callback(); //回调
+            }
+        }
+    }
+
+    function css(targetObj, cssObj) {
+        var str = targetObj.getAttribute("style") ? targetObj.getAttribute('style') : '';
+        for (var i in cssObj) {
+            str += i + ':' + cssObj[i] + ';';
+        }
+        targetObj.style.cssText = str;
+    }
+
+    var js_btn_1=document.getElementById('js_btn_1');
+    js_btn_1.onclick=function(){
+	    alert('我是傻逼!', function() {
+	        window.location.href = 'http://baidu.com';
+	    });
+    }
+
+</script>
+       
+</body>
+</html>

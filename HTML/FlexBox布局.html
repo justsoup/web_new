@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlexBox布局</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+
+        .main{
+            /* 关键代码 */
+            display: flex;
+			justify-content: space-between;
+
+
+            min-width: 600px;
+            overflow: hidden;
+        }
+        
+
+        .center{
+            /* 关键代码 */
+            flex: 1;
+			height: 600px;
+
+
+            background:rgb(211, 70, 70);
+            text-align: center;
+        }
+
+        .left,.right{
+            /* 关键代码 */
+            flex: 0 0 200px;
+			height: 400px;
+
+
+            background: yellowgreen;
+            text-align: center;
+        }
+
+
+        /* 三列等高 */
+        /* .center,.left,.right{
+            padding-bottom: 10000px;
+            margin-bottom: -10000px;
+        } */
+
+    </style>
+</head>
+<body>
+    <div class="main">
+        <div class="left">left</div>
+        <div class="center">center</div>
+        <div class="right">right</div>
+    </div>
+</body>
+</html>
