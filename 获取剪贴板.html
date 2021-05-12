@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>获取剪贴板</title>
+    <style>
+        .pasteEle{
+            width: 100%;
+            height: 500px;
+            background-color: gray;
+            overflow: hidden;
+        }
+        .getImgUrl{
+            background-color:blueviolet;
+            color:white;
+            width: 300px;
+            height: 60px;
+            display: block;
+            margin: 10px auto;
+            border-radius: 8px;
+            border:none;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="pasteEle" contenteditable="true" id="pasteEle"></div>
+    <button id="getImgUrl" class="getImgUrl">获取图片地址</button>
+    <div id="imgUrlList"></div>
+    <script>
+        let pasteEle = document.getElementById('pasteEle');
+        let getImgUrl= document.getElementById('getImgUrl');
+        let imgUrlList= document.getElementById('imgUrlList');
+
+        getImgUrl.addEventListener('click',function(){
+            let imgUrl = pasteEle.getElementsByTagName('img');
+            imgUrlList.innerHTML=''
+            for(let i = 0 ;i< imgUrl.length;i++){
+                let src=imgUrl[i].getAttribute('src')
+                imgUrlList.innerHTML+=`<p data-id="p${i}">${src}</p>`
+                imgUrlList.addEventListener('click',function(e){
+                    e = e || window.event;
+                    let target = e.target || e.srcElement;
+                    console.log(e.target.getAttribute('data-id'))
+                },false)
+            } 
+        })
+
+        function copyText() {
+            var text = document.getElementById("text").innerText;
+            var input = document.getElementById("input");
+            input.value = text; // 修改文本框的内容
+            input.select(); // 选中文本
+            document.execCommand("copy"); // 执行浏览器复制命令
+            alert("复制成功");
+        }
+    </script>
+</body>
+</html>
