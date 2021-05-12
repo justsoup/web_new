@@ -40,7 +40,7 @@
         ② beforeRouteUpdate(to, from, next) {}
     捕获所有路由
         {
-            path: '*'   // 会匹配所有路径(应该放在最后)
+            path: '*'   // 会匹配所有路径(应该放在最后,router必备)
         }
         {
             path: '/user-*'    // 会匹配以 `/user-` 开头的任意路径
@@ -57,8 +57,89 @@
     
     router.go(n)
         对window.history.go(n)的封装
+    
+    name参数：给path路径起代号
+    alias参数：将path路径替换成别的路径
 
-            
+    components(多个命名视图):{
+        default:xxx,
+        a:xxx,
+        b:xxx
+    }
+    <router-view name="a"/>
+    <router-view name="b"/>
+
+    redirect参数：
+        redirect: '/b'
+        redirect: { name: 'foo' }
+        redirect: to => {
+            const { hash, params, query } = to
+            if (query.to === 'foo') {
+                return { path: '/foo', query: null }
+            }
+            if (hash === '#baz') {
+                return { name: 'baz', hash: '' }
+            }
+            if (params.id) {
+                return '/with-params/:id'
+            } else {
+                return '/bar'
+            }
+        }
+
+    $route函数模式解耦
+        {
+            path: '/search',
+            component: SearchUser,
+            props: route => ({ query: route.query.q })
+        }
+        URL /search?q=vue 会将 {query: 'vue'} 作为属性传递给 SearchUser 组件。
+
+    meta参数(路由元信息): { requiresAuth: true }
+        全局导航守卫遍历(判断用户登陆状态)
+        router.beforeEach((to, from, next) => {
+            if (to.matched.some(record => record.meta.requiresAuth)) {
+                if (!auth.loggedIn()) {
+                    next({
+                        path: '/login',
+                        query: { redirect: to.fullPath }
+                    })
+                } 
+                else { next() }
+            } 
+            else { next() // 确保一定要调用 next() }
+        })
+    
+    单个路由过渡效果
+        const Foo = {
+            template: `
+                <transition name="slide">
+                <div class="foo">...</div>
+                </transition>
+            `
+        }
+
+    自定义规则过渡效果
+        beforeRouteUpdate (to, from, next) { //定义规则 }
+
+        <transition :name="transitionName">
+            <router-view></router-view>
+        </transition>
+
+    自定义初始页面滚动位置
+        scrollBehavior (to, from, savedPosition) {
+            if (savedPosition) return savedPosition 
+            else return { x: 0, y: 0 }
+        }
+        精确位置滚动可以通过to.hash==='#anchor2'{ position.offset = { y: 100 } }
+        平滑滚动 behavior: 'smooth',
+
+    路由懒加载(异步组件与webpack代码分割)：
+        const Foo = () => import('./Foo.vue')
+    
+    导航异常捕获
+        使用router-link高阶组件时，异常不会打印错误
+        router.push('/admin').catch(()=>{})
 
 ####钩子函数
     是不是很熟悉的策略模式！
@@ -81,4 +162,13 @@
             next()
         }
     }]
+
+####导航守卫
+    
+
+####服务器配置history错误页面
+    Nginx
+        location / {
+            try_files $uri $uri/ /index.html;
+        }
 
